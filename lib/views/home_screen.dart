@@ -13,16 +13,36 @@ class WeatherView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Obx(() => Text(weatherController.placeName.value)),
+        title: Obx(() => Row(
+              children: [
+                const Icon(
+                  Icons.location_pin,
+                  size: 20,
+                  color: Colors.white,
+                ),
+                Text(
+                  weatherController.placeName.value,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            )),
         actions: [
           IconButton(
-            icon: const Icon(Icons.search),
+            icon: const Icon(
+              Icons.search,
+              color: Colors.white,
+            ),
             onPressed: () {
               Get.to(() => SearchScreen());
             },
           )
         ],
+        backgroundColor: const Color(0xFF00566D),
       ),
+      backgroundColor: const Color(0xFF00566D),
       body: Obx(() {
         if (weatherController.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
@@ -31,140 +51,252 @@ class WeatherView extends StatelessWidget {
         } else {
           double tempCelsius = weatherController.convertKelvinToCelsius(
               weatherController.weather.value.current.temp);
+
+          // Convert weather description to camel case
+          String description =
+              weatherController.weather.value.current.weather[0].description;
+          String formattedDescription = description.split(' ').map((word) {
+            if (word.isEmpty) return '';
+            return word.substring(0, 1).toUpperCase() +
+                word.substring(1).toLowerCase();
+          }).join(' ');
+
+          // Day formatted as EEEE, MMM dd, yyyy
+          String dayName = DateFormat('EEEE, MMM dd, yyyy').format(
+              DateTime.fromMillisecondsSinceEpoch(
+                  weatherController.weather.value.current.dt * 1000));
+
           return SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
-                  'Location: ${weatherController.placeName.value}',
-                  style: const TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: weatherController.weather.value.current.weather
                       .map((weatherElement) {
-                    return Column(
+                    return Row(
                       children: [
                         Image.network(
                           'http://openweathermap.org/img/wn/${weatherElement.icon}@2x.png',
-                          width: 50,
-                          height: 50,
+                          width: 100,
+                          height: 100,
                         ),
                         Text(
-                          weatherElement.description,
-                          style: const TextStyle(fontSize: 16),
+                          '${tempCelsius.toStringAsFixed(2)} °C',
+                          style: const TextStyle(
+                            fontSize: 35,
+                            color: Colors.white,
+                          ),
                         ),
                       ],
                     );
                   }).toList(),
                 ),
-                const SizedBox(height: 20),
                 Text(
-                  'Temperature: ${tempCelsius.toStringAsFixed(2)}°C',
-                  style: const TextStyle(fontSize: 18),
-                ),
-                Text(
-                  'Humidity: ${weatherController.weather.value.current.humidity}%',
-                  style: const TextStyle(fontSize: 18),
-                ),
-                const SizedBox(height: 20),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: List.generate(
-                      weatherController.weather.value.hourly.length,
-                      (index) {
-                        final hourlyWeather =
-                            weatherController.weather.value.hourly[index];
-                        double hourlyTempCelsius = weatherController
-                            .convertKelvinToCelsius(hourlyWeather.temp);
-                        return GestureDetector(
-                          onTap: () {
-                            weatherController.selectedHourlyIndex(index);
-                            Get.to(() => HourlyDetailScreen());
-                          },
-                          child: Card(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                children: [
-                                  Text(
-                                    '${DateFormat.jm().format(DateTime.fromMillisecondsSinceEpoch(hourlyWeather.dt * 1000))}',
-                                    style: const TextStyle(fontSize: 14),
-                                  ),
-                                  Image.network(
-                                    'http://openweathermap.org/img/wn/${hourlyWeather.weather[0].icon}@2x.png',
-                                    width: 50,
-                                    height: 50,
-                                  ),
-                                  Text(
-                                    '${hourlyTempCelsius.toStringAsFixed(2)}°C',
-                                    style: const TextStyle(fontSize: 16),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
+                  '$formattedDescription',
+                  style: const TextStyle(
+                    fontSize: 22,
+                    color: Colors.white,
                   ),
                 ),
+
+                const SizedBox(height: 5),
+
+                // Day to EEEE, MMM, DD, YYYY
+                Text(
+                  '$dayName',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                  ),
+                ),
+
+                const SizedBox(height: 10),
+
+                // Row to display max and min temperatures
+                Row(
+                  // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.arrow_drop_up,
+                          color: Colors.white,
+                        ),
+                        Text(
+                          '${weatherController.convertKelvinToCelsius(weatherController.weather.value.daily[0].temp.max).toStringAsFixed(2)} °C',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.arrow_drop_down,
+                          color: Colors.white,
+                        ),
+                        Text(
+                          '${weatherController.convertKelvinToCelsius(weatherController.weather.value.daily[0].temp.min).toStringAsFixed(2)} °C',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+
                 const SizedBox(height: 20),
-                Column(
-                  children: List.generate(
-                    weatherController.weather.value.daily.length,
-                    (index) {
-                      final dailyWeather =
-                          weatherController.weather.value.daily[index];
-                      double dayTempCelsius = weatherController
-                          .convertKelvinToCelsius(dailyWeather.temp.day);
-                      String dayName = DateFormat.EEEE().format(
-                          DateTime.fromMillisecondsSinceEpoch(
-                              dailyWeather.dt * 1000));
-                      return GestureDetector(
-                        onTap: () {
-                          weatherController.selectedDailyIndex(index);
-                          Get.to(() => DailyDetailScreen());
-                        },
-                        child: Card(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              children: [
-                                Image.network(
-                                  'http://openweathermap.org/img/wn/${dailyWeather.weather[0].icon}@2x.png',
-                                  width: 50,
-                                  height: 50,
-                                ),
-                                const SizedBox(width: 10),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      dayName,
-                                      style: const TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold),
+
+                // Design here
+                ClipPath(
+                  clipper: ReverseWaveClipper(),
+                  child: Container(
+                    width: double.infinity,
+                    color: Colors.grey[100],
+                    padding: const EdgeInsets.only(
+                      top: 20,
+                      left: 10,
+                      right: 10,
+                      bottom: 10,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Hourly',
+                          style: TextStyle(fontSize: 17),
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: List.generate(
+                              weatherController.weather.value.hourly.length,
+                              (index) {
+                                final hourlyWeather = weatherController
+                                    .weather.value.hourly[index];
+                                double hourlyTempCelsius = weatherController
+                                    .convertKelvinToCelsius(hourlyWeather.temp);
+                                return GestureDetector(
+                                  onTap: () {
+                                    weatherController
+                                        .selectedHourlyIndex(index);
+                                    Get.to(() => HourlyDetailScreen());
+                                  },
+                                  child: Card(
+                                    color: Colors.white,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            '${DateFormat.jm().format(DateTime.fromMillisecondsSinceEpoch(hourlyWeather.dt * 1000))}',
+                                            style:
+                                                const TextStyle(fontSize: 14),
+                                          ),
+                                          Image.network(
+                                            'http://openweathermap.org/img/wn/${hourlyWeather.weather[0].icon}@2x.png',
+                                            width: 50,
+                                            height: 50,
+                                          ),
+                                          Text(
+                                            '${hourlyTempCelsius.toStringAsFixed(2)}°C',
+                                            style:
+                                                const TextStyle(fontSize: 16),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                    Text(
-                                      dailyWeather.weather[0].description,
-                                      style: const TextStyle(fontSize: 14),
-                                    ),
-                                    Text(
-                                      '${dayTempCelsius.toStringAsFixed(2)}°C',
-                                      style: const TextStyle(fontSize: 14),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                  ),
+                                );
+                              },
                             ),
                           ),
                         ),
-                      );
-                    },
+
+                        const SizedBox(height: 20),
+                        const Text(
+                          'Daily',
+                          style: TextStyle(fontSize: 17),
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+
+                        // Daily weather section
+                        Column(
+                          children: List.generate(
+                            weatherController.weather.value.daily.length,
+                            (index) {
+                              final dailyWeather =
+                                  weatherController.weather.value.daily[index];
+                              double dayTempCelsius =
+                                  weatherController.convertKelvinToCelsius(
+                                      dailyWeather.temp.day);
+                              String dayName = DateFormat.EEEE().format(
+                                  DateTime.fromMillisecondsSinceEpoch(
+                                      dailyWeather.dt * 1000));
+                              return GestureDetector(
+                                onTap: () {
+                                  weatherController.selectedDailyIndex(index);
+                                  Get.to(() => DailyDetailScreen());
+                                },
+                                child: Card(
+                                  color: Colors.white,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      children: [
+                                        Image.network(
+                                          'http://openweathermap.org/img/wn/${dailyWeather.weather[0].icon}@2x.png',
+                                          width: 50,
+                                          height: 50,
+                                        ),
+                                        const SizedBox(width: 10),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              dayName,
+                                              style: const TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            Text(
+                                              dailyWeather
+                                                  .weather[0].description,
+                                              style:
+                                                  const TextStyle(fontSize: 14),
+                                            ),
+                                            Text(
+                                              '${dayTempCelsius.toStringAsFixed(2)}°C',
+                                              style:
+                                                  const TextStyle(fontSize: 14),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -174,4 +306,24 @@ class WeatherView extends StatelessWidget {
       }),
     );
   }
+}
+
+// Custom Clipper class for reversed wave shape
+class ReverseWaveClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    var path = Path();
+    path.moveTo(0, size.height); // start from bottom-left corner
+    path.lineTo(0, 0); // move to top-left corner
+    path.quadraticBezierTo(
+        size.width / 4, 0, size.width / 2, 25); // wave curve control points
+    path.quadraticBezierTo(
+        3 / 4 * size.width, 50, size.width, 25); // wave curve control points
+    path.lineTo(size.width, size.height); // line to bottom-right corner
+    path.close(); // close the path for a clean look
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
