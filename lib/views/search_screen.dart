@@ -19,7 +19,7 @@ class SearchScreen extends StatelessWidget {
           icon: const Icon(Icons.arrow_back_ios_sharp, color: Colors.white),
           onPressed: () => Get.back(),
         ),
-        backgroundColor: const Color(0xFF00566D),
+        backgroundColor: const Color.fromARGB(255, 4, 129, 163),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -45,7 +45,7 @@ class SearchScreen extends StatelessWidget {
                 }
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF00566D), // Background color
+                backgroundColor: const Color.fromARGB(255, 4, 129, 163),
                 foregroundColor: Colors.white, // Text color
                 padding: const EdgeInsets.symmetric(
                     horizontal: 24, vertical: 12), // Button padding

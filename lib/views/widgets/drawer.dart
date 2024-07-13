@@ -1,5 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import '../about_screen.dart';
+import '../feedback_screen.dart';
 
 class MyDrawer extends StatelessWidget {
   const MyDrawer({super.key});
@@ -33,7 +36,7 @@ class MyDrawer extends StatelessWidget {
             ),
           ),
           ListTile(
-            leading: const Icon(CupertinoIcons.home),
+            leading: const Icon(Icons.home),
             title: const Text('Home'),
             onTap: () {
               Navigator.pop(context);
@@ -41,19 +44,17 @@ class MyDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: const Icon(CupertinoIcons.info),
+            leading: const Icon(Icons.info),
             title: const Text('About'),
             onTap: () {
-              Navigator.pop(context);
-              // Navigate to about page if needed
+              Get.to(AboutUsScreen());
             },
           ),
           ListTile(
             leading: const Icon(Icons.feedback),
             title: const Text('Feedback'),
             onTap: () {
-              Navigator.pop(context);
-              // Navigate to feedback page if needed
+              Get.to(FeedbackScreen());
             },
           ),
         ],

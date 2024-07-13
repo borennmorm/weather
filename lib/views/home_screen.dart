@@ -6,6 +6,7 @@ import 'daily_screen.dart';
 import 'hourly_screen.dart';
 import 'search_screen.dart';
 import 'widgets/drawer.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class WeatherView extends StatelessWidget {
   final WeatherController weatherController = Get.put(WeatherController());
@@ -51,7 +52,12 @@ class WeatherView extends StatelessWidget {
       drawer: const MyDrawer(),
       body: Obx(() {
         if (weatherController.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+            child: SpinKitFadingCircle(
+              color: Colors.white,
+              size: 50.0,
+            ),
+          );
         } else if (weatherController.weather.value.timezone.isEmpty) {
           return const Center(child: Text('Failed to load weather data'));
         } else {
@@ -194,8 +200,6 @@ class WeatherView extends StatelessWidget {
                                     .weather.value.hourly[index];
                                 double hourlyTempCelsius = weatherController
                                     .convertKelvinToCelsius(hourlyWeather.temp);
-                                final selectedHourlyWeather =
-                                    weatherController.selectedHourlyWeather;
                                 return GestureDetector(
                                   onTap: () {
                                     weatherController

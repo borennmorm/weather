@@ -199,7 +199,7 @@ class HourlyDetailScreen extends StatelessWidget {
                           ),
                         ],
                       ),
-                      Spacer()
+                      const Spacer()
                     ],
                   ),
                 ),
