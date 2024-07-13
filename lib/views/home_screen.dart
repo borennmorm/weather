@@ -5,6 +5,7 @@ import '../controllers/weather_controller.dart';
 import 'daily_screen.dart';
 import 'hourly_screen.dart';
 import 'search_screen.dart';
+import 'widgets/drawer.dart';
 
 class WeatherView extends StatelessWidget {
   final WeatherController weatherController = Get.put(WeatherController());
@@ -13,22 +14,26 @@ class WeatherView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Obx(() => Row(
-              children: [
-                const Icon(
-                  Icons.location_pin,
-                  size: 20,
-                  color: Colors.white,
-                ),
-                Text(
-                  weatherController.placeName.value,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
+        title: Obx(() => Text(
+              weatherController.placeName.value,
+              style: const TextStyle(
+                fontSize: 18,
+                color: Colors.white,
+              ),
             )),
+        titleSpacing: 0,
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(
+              Icons.location_pin,
+              color: Colors.white,
+              size: 20,
+            ),
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
+          ),
+        ),
         actions: [
           IconButton(
             icon: const Icon(
@@ -40,9 +45,10 @@ class WeatherView extends StatelessWidget {
             },
           )
         ],
-        backgroundColor: const Color(0xFF00566D),
+        backgroundColor: const Color.fromARGB(255, 4, 129, 163),
       ),
-      backgroundColor: const Color(0xFF00566D),
+      backgroundColor: const Color.fromARGB(255, 4, 129, 163),
+      drawer: const MyDrawer(),
       body: Obx(() {
         if (weatherController.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
@@ -82,7 +88,7 @@ class WeatherView extends StatelessWidget {
                           height: 100,
                         ),
                         Text(
-                          '${tempCelsius.toStringAsFixed(2)} °C',
+                          '${tempCelsius.toStringAsFixed(0)} °C',
                           style: const TextStyle(
                             fontSize: 35,
                             color: Colors.white,
@@ -188,11 +194,15 @@ class WeatherView extends StatelessWidget {
                                     .weather.value.hourly[index];
                                 double hourlyTempCelsius = weatherController
                                     .convertKelvinToCelsius(hourlyWeather.temp);
+                                final selectedHourlyWeather =
+                                    weatherController.selectedHourlyWeather;
                                 return GestureDetector(
                                   onTap: () {
                                     weatherController
                                         .selectedHourlyIndex(index);
-                                    Get.to(() => HourlyDetailScreen());
+                                    Get.to(() => HourlyDetailScreen(
+                                          selectedHour: '',
+                                        ));
                                   },
                                   child: Card(
                                     color: Colors.white,
@@ -211,7 +221,7 @@ class WeatherView extends StatelessWidget {
                                             height: 50,
                                           ),
                                           Text(
-                                            '${hourlyTempCelsius.toStringAsFixed(2)}°C',
+                                            '${hourlyTempCelsius.toStringAsFixed(0)}°C',
                                             style:
                                                 const TextStyle(fontSize: 16),
                                           ),
@@ -250,42 +260,50 @@ class WeatherView extends StatelessWidget {
                               return GestureDetector(
                                 onTap: () {
                                   weatherController.selectedDailyIndex(index);
-                                  Get.to(() => DailyDetailScreen());
+                                  Get.to(() => DailyDetailScreen(
+                                        selectedDaily: '',
+                                      ));
                                 },
                                 child: Card(
                                   color: Colors.white,
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Image.network(
-                                          'http://openweathermap.org/img/wn/${dailyWeather.weather[0].icon}@2x.png',
-                                          width: 50,
-                                          height: 50,
-                                        ),
-                                        const SizedBox(width: 10),
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                        Row(
                                           children: [
-                                            Text(
-                                              dayName,
-                                              style: const TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold),
+                                            Image.network(
+                                              'http://openweathermap.org/img/wn/${dailyWeather.weather[0].icon}@2x.png',
+                                              width: 50,
+                                              height: 50,
                                             ),
-                                            Text(
-                                              dailyWeather
-                                                  .weather[0].description,
-                                              style:
-                                                  const TextStyle(fontSize: 14),
-                                            ),
-                                            Text(
-                                              '${dayTempCelsius.toStringAsFixed(2)}°C',
-                                              style:
-                                                  const TextStyle(fontSize: 14),
+                                            const SizedBox(width: 10),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  dayName,
+                                                  style: const TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                Text(
+                                                  dailyWeather
+                                                      .weather[0].description,
+                                                  style: const TextStyle(
+                                                      fontSize: 14),
+                                                ),
+                                              ],
                                             ),
                                           ],
+                                        ),
+                                        Text(
+                                          '${dayTempCelsius.toStringAsFixed(2)} °C',
+                                          style: const TextStyle(fontSize: 14),
                                         ),
                                       ],
                                     ),

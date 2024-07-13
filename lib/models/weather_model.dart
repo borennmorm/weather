@@ -49,6 +49,7 @@ class Current {
   List<WeatherElement> weather;
   double? pop;
   Rain? rain;
+  
 
   Current({
     required this.dt,

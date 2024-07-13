@@ -11,7 +11,15 @@ class SearchScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Search Weather by Location'),
+        title: const Text(
+          'Search Location',
+          style: TextStyle(color: Colors.white),
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_sharp, color: Colors.white),
+          onPressed: () => Get.back(),
+        ),
+        backgroundColor: const Color(0xFF00566D),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -20,8 +28,8 @@ class SearchScreen extends StatelessWidget {
           children: [
             TextField(
               controller: searchController,
-              decoration: InputDecoration(
-                labelText: 'Enter Location Name',
+              decoration: const InputDecoration(
+                labelText: 'Location Name ',
                 border: OutlineInputBorder(),
               ),
             ),
@@ -36,8 +44,17 @@ class SearchScreen extends StatelessWidget {
                   Get.snackbar('Error', 'Please enter a location name');
                 }
               },
-              child: const Text('Search'),
-            ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF00566D), // Background color
+                foregroundColor: Colors.white, // Text color
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 24, vertical: 12), // Button padding
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8), // Rounded corners
+                ),
+              ),
+              child: const Text('Search '),
+            )
           ],
         ),
       ),
