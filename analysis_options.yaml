@@ -1,0 +1,7 @@
+analyzer:
+  errors:
+    constant_identifier_names: ignore
+    non_constant_identifier_names: ignore
+    unnecessary_string_interpolations: ignore
+    use_key_in_widget_constructors: ignore
+include: package:flutter_lints/flutter.yaml
