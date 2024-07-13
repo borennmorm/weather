@@ -31,6 +31,9 @@ class WeatherController extends GetxController {
     daily: [],
   ).obs;
 
+  var selectedHourlyIndex = 0.obs;
+  var selectedDailyIndex = 0.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -41,7 +44,6 @@ class WeatherController extends GetxController {
     bool serviceEnabled;
     LocationPermission permission;
 
-    // Test if location services are enabled.
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       Get.snackbar('Location Error', 'Location services are disabled.');
@@ -62,7 +64,6 @@ class WeatherController extends GetxController {
       return;
     }
 
-    // When we reach here, permissions are granted and we can get the position of the device.
     Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     fetchWeather(position.latitude, position.longitude);
     getPlaceName(position.latitude, position.longitude);
@@ -93,7 +94,7 @@ class WeatherController extends GetxController {
     }
   }
 
-   void fetchWeatherByLocationName(String locationName) async {
+  void fetchWeatherByLocationName(String locationName) async {
     try {
       isLoading(true);
       List<Location> locations = await locationFromAddress(locationName);
@@ -113,5 +114,62 @@ class WeatherController extends GetxController {
 
   double convertKelvinToCelsius(double kelvin) {
     return kelvin - 273.15;
+  }
+
+  Current get selectedHourlyWeather {
+    if (weather.value.hourly.isEmpty) {
+      return Current(
+        dt: 0,
+        temp: 0,
+        feelsLike: 0,
+        pressure: 0,
+        humidity: 0,
+        dewPoint: 0,
+        uvi: 0,
+        clouds: 0,
+        visibility: 0,
+        windSpeed: 0,
+        windDeg: 0,
+        windGust: 0,
+        weather: [],
+      );
+    }
+    return weather.value.hourly[selectedHourlyIndex.value];
+  }
+
+  Daily get selectedDailyWeather {
+    if (weather.value.daily.isEmpty) {
+      return Daily(
+        dt: 0,
+        sunrise: 0,
+        sunset: 0,
+        moonrise: 0,
+        moonset: 0,
+        moonPhase: 0,
+        summary: '',
+        temp: Temp(day: 0, min: 0, max: 0, night: 0, eve: 0, morn: 0),
+        feelsLike: FeelsLike(day: 0, night: 0, eve: 0, morn: 0),
+        pressure: 0,
+        humidity: 0,
+        dewPoint: 0,
+        windSpeed: 0,
+        windDeg: 0,
+        windGust: 0,
+        weather: [],
+        clouds: 0,
+        pop: 0,
+        rain: 0,
+        uvi: 0,
+      );
+    }
+    return weather.value.daily[selectedDailyIndex.value];
+  }
+
+  void navigateToHourlyDetailScreen() {
+    Get.toNamed('/hourly_detail');
+  }
+
+  void navigateToDailyDetailScreen() {
+    Get.toNamed('/daily_detail');
   }
 }
