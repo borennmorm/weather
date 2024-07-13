@@ -5,6 +5,7 @@ import '../controllers/weather_controller.dart';
 import 'daily_screen.dart';
 import 'hourly_screen.dart';
 import 'search_screen.dart';
+
 class WeatherView extends StatelessWidget {
   final WeatherController weatherController = Get.put(WeatherController());
 
@@ -90,8 +91,8 @@ class WeatherView extends StatelessWidget {
                               child: Column(
                                 children: [
                                   Text(
-                                    '${DateFormat.Hm().format(DateTime.fromMillisecondsSinceEpoch(hourlyWeather.dt * 1000))}',
-                                    style: const TextStyle(fontSize: 16),
+                                    '${DateFormat.jm().format(DateTime.fromMillisecondsSinceEpoch(hourlyWeather.dt * 1000))}',
+                                    style: const TextStyle(fontSize: 14),
                                   ),
                                   Image.network(
                                     'http://openweathermap.org/img/wn/${hourlyWeather.weather[0].icon}@2x.png',
