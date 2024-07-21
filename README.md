@@ -24,13 +24,13 @@ Weather 24 boasts a simple and intuitive user interface, ensuring ease of use an
 3. **Internet Access**: Ensure your device is connected to the internet to fetch the latest weather updates.
 
 ## Video
-![Demo](https://drive.google.com/file/d/1DS3Q_B4o2meIfbdfoUxpOnNQrrw5r0_-/view)
+[Demo](https://drive.google.com/file/d/1DS3Q_B4o2meIfbdfoUxpOnNQrrw5r0_-/view)
 
 ## Documentation
-![About Application](https://drive.google.com/file/d/1pQzpCjjCrVaGROdI4KStoQ9PfRJq6LST/view?usp=sharing)
+[About Application](https://drive.google.com/file/d/1pQzpCjjCrVaGROdI4KStoQ9PfRJq6LST/view?usp=sharing)
 
 ## Download Apk
-![APK](https://drive.google.com/file/d/1AQGuR-iSZMcbcNpIdI9Trp_8xWC8duB1/view?usp=drive_link)
+[APK](https://drive.google.com/file/d/1AQGuR-iSZMcbcNpIdI9Trp_8xWC8duB1/view?usp=drive_link)
 
 ## Usage Notes
 - The app requires an active internet connection to retrieve weather data.
