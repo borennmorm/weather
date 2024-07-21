@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import '../models/weather_model.dart';
 
 class WeatherService {
-  static const String apiKey = 'ac12e37343d81cb4f1c903601c122a33';
+  static const String apiKey = '[Your API Key]';
 
   static Future<Weather> getCurrentWeatherByCoordinates(double lat, double lon) async {
     final response = await http.get(
